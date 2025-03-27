@@ -1,0 +1,146 @@
+BASIC ACL
+
+
+[V200R003C00]
+#
+ sysname R1
+#
+ snmp-agent local-engineid 800007DB03000000000000
+ snmp-agent 
+#
+ clock timezone China-Standard-Time minus 08:00:00
+#
+portal local-server load portalpage.zip
+#
+ drop illegal-mac alarm
+#
+ set cpu-usage threshold 80 restore 75
+#
+acl number 2000  
+ rule 5 deny source 10.0.0.2 0 
+ rule 10 permit source 10.0.0.0 0.0.0.255 
+#
+aaa 
+ authentication-scheme default
+ authorization-scheme default
+ accounting-scheme default
+ domain default 
+ domain default_admin 
+ local-user admin password cipher %$%$K8m.Nt84DZ}e#<0`8bmE3Uw}%$%$
+ local-user admin service-type http
+#
+firewall zone Local
+ priority 15
+#
+interface Ethernet0/0/0
+#
+interface Ethernet0/0/1
+#
+interface Ethernet0/0/2
+#
+interface Ethernet0/0/3
+#
+interface Ethernet0/0/4
+#
+interface Ethernet0/0/5
+#
+interface Ethernet0/0/6
+#
+interface Ethernet0/0/7
+#
+interface GigabitEthernet0/0/0
+ ip address 10.0.0.1 255.255.255.0 
+ traffic-filter inbound acl 2000
+#
+interface GigabitEthernet0/0/1
+ ip address 20.0.0.1 255.255.255.0 
+#
+interface NULL0
+#
+user-interface con 0
+ authentication-mode password
+user-interface vty 0 4
+user-interface vty 16 20
+#
+wlan ac
+#
+return
+
+ADVANCED ACL
+
+
+[V200R003C00]
+#
+ sysname R1
+#
+ snmp-agent local-engineid 800007DB03000000000000
+ snmp-agent 
+#
+ clock timezone China-Standard-Time minus 08:00:00
+#
+portal local-server load portalpage.zip
+#
+ drop illegal-mac alarm
+#
+ time-range test from 09:00 2022/3/22 to 23:59 2022/3/22 
+ time-range exam 09:00 to 17:00 working-day   
+#
+ set cpu-usage threshold 80 restore 75
+#
+acl number 2000  
+ rule 5 deny source 10.0.0.2 0 
+ rule 10 permit source 10.0.0.0 0.0.0.255 
+#
+acl number 3000  
+ rule 5 deny icmp source 10.0.0.3 0 destination 20.0.0.3 0 icmp-type echo 
+ rule 10 permit icmp source 10.0.0.0 0.0.0.255 destination 20.0.0.0 0.0.0.255 
+ rule 11 deny tcp source 10.0.0.3 0 destination 20.0.0.3 0 destination-port range ftp-data ftp 
+ rule 15 permit ip source 10.0.0.2 0 destination 20.0.0.2 0 
+ rule 20 permit ip source 10.0.0.3 0 destination 20.0.0.3 0 
+ rule 25 deny ip 
+#
+aaa 
+ authentication-scheme default
+ authorization-scheme default
+ accounting-scheme default
+ domain default 
+ domain default_admin 
+ local-user admin password cipher %$%$K8m.Nt84DZ}e#<0`8bmE3Uw}%$%$
+ local-user admin service-type http
+#
+firewall zone Local
+ priority 15
+#
+interface Ethernet0/0/0
+#
+interface Ethernet0/0/1
+#
+interface Ethernet0/0/2
+#
+interface Ethernet0/0/3
+#
+interface Ethernet0/0/4
+#
+interface Ethernet0/0/5
+#
+interface Ethernet0/0/6
+#
+interface Ethernet0/0/7
+#
+interface GigabitEthernet0/0/0
+ ip address 10.0.0.1 255.255.255.0 
+ traffic-filter inbound acl 3000
+#
+interface GigabitEthernet0/0/1
+ ip address 20.0.0.1 255.255.255.0 
+#
+interface NULL0
+#
+user-interface con 0
+ authentication-mode password
+user-interface vty 0 4
+user-interface vty 16 20
+#
+wlan ac
+#
+return
