@@ -1,0 +1,464 @@
+
+#
+sysname S1
+#
+vlan batch 10 20 30
+#
+cluster enable
+ntdp enable
+ndp enable
+#
+drop illegal-mac alarm
+#
+diffserv domain default
+#
+drop-profile default
+#
+aaa 
+ authentication-scheme default
+ authorization-scheme default
+ accounting-scheme default
+ domain default 
+ domain default_admin 
+ local-user admin password simple admin
+ local-user admin service-type http
+#
+interface Vlanif1
+ ip address 192.168.0.254 255.255.255.0 
+#
+interface Vlanif10
+ ip address 10.10.0.254 255.255.255.0 
+#
+interface Vlanif20
+ ip address 10.20.0.254 255.255.255.0 
+#
+interface Vlanif30
+ ip address 10.30.0.254 255.255.255.0 
+#
+interface MEth0/0/1
+#
+interface GigabitEthernet0/0/1
+ port link-type access
+#
+interface GigabitEthernet0/0/2
+ port link-type access
+ port default vlan 10
+#
+interface GigabitEthernet0/0/3
+ port link-type access
+ port default vlan 20
+#
+interface GigabitEthernet0/0/4
+ port link-type access
+ port default vlan 30
+#
+interface GigabitEthernet0/0/5
+ port link-type access
+ port default vlan 30
+#
+interface GigabitEthernet0/0/6
+#
+interface GigabitEthernet0/0/7
+#
+interface GigabitEthernet0/0/8
+#
+interface GigabitEthernet0/0/9
+#
+interface GigabitEthernet0/0/10
+#
+interface GigabitEthernet0/0/11
+#
+interface GigabitEthernet0/0/12
+#
+interface GigabitEthernet0/0/13
+#
+interface GigabitEthernet0/0/14
+#
+interface GigabitEthernet0/0/15
+#
+interface GigabitEthernet0/0/16
+#
+interface GigabitEthernet0/0/17
+#
+interface GigabitEthernet0/0/18
+#
+interface GigabitEthernet0/0/19
+#
+interface GigabitEthernet0/0/20
+#
+interface GigabitEthernet0/0/21
+#
+interface GigabitEthernet0/0/22
+#
+interface GigabitEthernet0/0/23
+#
+interface GigabitEthernet0/0/24
+#
+interface NULL0
+#
+ip route-static 0.0.0.0 0.0.0.0 192.168.0.1
+#
+user-interface con 0
+user-interface vty 0 4
+#
+return
+
+PUBLIC ROUTER CONFIGURATIONS
+
+
+#
+sysname Public
+#
+aaa 
+ authentication-scheme default
+ authorization-scheme default
+ accounting-scheme default
+ domain default 
+ domain default_admin 
+ local-user admin password cipher OOCM4m($F4ajUn1vMEIBNUw#
+ local-user admin service-type http
+#
+firewall zone Local
+ priority 16
+#
+interface Ethernet0/0/0
+#
+interface Ethernet0/0/1
+#
+interface Serial0/0/0
+ link-protocol ppp
+#
+interface Serial0/0/1
+ link-protocol ppp
+#
+interface Serial0/0/2
+ link-protocol ppp
+#
+interface Serial0/0/3
+ link-protocol ppp
+#
+interface GigabitEthernet0/0/0
+ ip address 200.0.0.254 255.255.255.0 
+#
+interface GigabitEthernet0/0/1
+#
+interface GigabitEthernet0/0/2
+#
+interface GigabitEthernet0/0/3
+#
+wlan
+#
+interface NULL0
+#
+user-interface con 0
+user-interface vty 0 4
+user-interface vty 16 20
+#
+return
+
+NAT CONFIGURATIONS
+STATIC NAT
+
+[V200R003C00]
+#
+ sysname NAT
+#
+ snmp-agent local-engineid 800007DB03000000000000
+ snmp-agent 
+#
+ clock timezone China-Standard-Time minus 08:00:00
+#
+portal local-server load portalpage.zip
+#
+ drop illegal-mac alarm
+#
+ set cpu-usage threshold 80 restore 75
+#
+aaa 
+ authentication-scheme default
+ authorization-scheme default
+ accounting-scheme default
+ domain default 
+ domain default_admin 
+ local-user admin password cipher %$%$K8m.Nt84DZ}e#<0`8bmE3Uw}%$%$
+ local-user admin service-type http
+#
+firewall zone Local
+ priority 15
+#
+ nat static global 200.0.0.2 inside 10.10.0.1 netmask 255.255.255.255
+ nat static global 200.0.0.3 inside 10.30.0.3 netmask 255.255.255.255
+#
+interface Ethernet0/0/0
+#
+interface Ethernet0/0/1
+#
+interface Ethernet0/0/2
+#
+interface Ethernet0/0/3
+#
+interface Ethernet0/0/4
+#
+interface Ethernet0/0/5
+#
+interface Ethernet0/0/6
+#
+interface Ethernet0/0/7
+#
+interface GigabitEthernet0/0/0
+ ip address 200.0.0.1 255.255.255.0 
+ nat static enable
+#
+interface GigabitEthernet0/0/1
+ ip address 192.168.0.1 255.255.255.0 
+#
+interface NULL0
+#
+ip route-static 10.0.0.0 255.0.0.0 192.168.0.254
+#
+user-interface con 0
+ authentication-mode password
+user-interface vty 0 4
+user-interface vty 16 20
+#
+wlan ac
+#
+return
+
+NAPT NAT CONFIGURATIONS
+
+
+[V200R003C00]
+#
+ sysname NAT
+#
+ snmp-agent local-engineid 800007DB03000000000000
+ snmp-agent 
+#
+ clock timezone China-Standard-Time minus 08:00:00
+#
+portal local-server load portalpage.zip
+#
+ drop illegal-mac alarm
+#
+ set cpu-usage threshold 80 restore 75
+#
+acl number 2000  
+ rule 5 permit 
+acl number 2010  
+ rule 5 permit source 10.10.0.0 0.0.0.255 
+acl number 2020  
+ rule 5 permit source 10.20.0.0 0.0.0.255 
+#
+aaa 
+ authentication-scheme default
+ authorization-scheme default
+ accounting-scheme default
+ domain default 
+ domain default_admin 
+ local-user admin password cipher %$%$K8m.Nt84DZ}e#<0`8bmE3Uw}%$%$
+ local-user admin service-type http
+#
+firewall zone Local
+ priority 15
+#
+ nat address-group 0 200.0.0.11 200.0.0.20
+ nat address-group 1 200.0.0.21 200.0.0.30
+ nat address-group 2 200.0.0.4 200.0.0.4
+ #
+ nat static global 200.0.0.2 inside 10.10.0.1 netmask 255.255.255.255
+ nat static global 200.0.0.3 inside 10.30.0.3 netmask 255.255.255.255
+#
+interface Ethernet0/0/0
+#
+interface Ethernet0/0/1
+#
+interface Ethernet0/0/2
+#
+interface Ethernet0/0/3
+#
+interface Ethernet0/0/4
+#
+interface Ethernet0/0/5
+#
+interface Ethernet0/0/6
+#
+interface Ethernet0/0/7
+#
+interface GigabitEthernet0/0/0
+ ip address 200.0.0.1 255.255.255.0 
+ nat outbound 2000 address-group 2 
+#
+interface GigabitEthernet0/0/1
+ ip address 192.168.0.1 255.255.255.0 
+#
+interface NULL0
+#
+ip route-static 10.0.0.0 255.0.0.0 192.168.0.254
+#
+user-interface con 0
+ authentication-mode password
+user-interface vty 0 4
+user-interface vty 16 20
+#
+wlan ac
+#
+return
+
+EASY IP CONFIGURATIONS
+
+
+[V200R003C00]
+#
+ sysname NAT
+#
+ snmp-agent local-engineid 800007DB03000000000000
+ snmp-agent 
+#
+ clock timezone China-Standard-Time minus 08:00:00
+#
+portal local-server load portalpage.zip
+#
+ drop illegal-mac alarm
+#
+ set cpu-usage threshold 80 restore 75
+#
+acl number 2000  
+ rule 5 permit 
+acl number 2010  
+ rule 5 permit source 10.10.0.0 0.0.0.255 
+acl number 2020  
+ rule 5 permit source 10.20.0.0 0.0.0.255 
+#
+aaa 
+ authentication-scheme default
+ authorization-scheme default
+ accounting-scheme default
+ domain default 
+ domain default_admin 
+ local-user admin password cipher %$%$K8m.Nt84DZ}e#<0`8bmE3Uw}%$%$
+ local-user admin service-type http
+#
+firewall zone Local
+ priority 15
+#
+ nat address-group 0 200.0.0.11 200.0.0.20
+ nat address-group 1 200.0.0.21 200.0.0.30
+ nat address-group 2 200.0.0.4 200.0.0.4
+ #
+ nat static global 200.0.0.2 inside 10.10.0.1 netmask 255.255.255.255
+ nat static global 200.0.0.3 inside 10.30.0.3 netmask 255.255.255.255
+#
+interface Ethernet0/0/0
+#
+interface Ethernet0/0/1
+#
+interface Ethernet0/0/2
+#
+interface Ethernet0/0/3
+#
+interface Ethernet0/0/4
+#
+interface Ethernet0/0/5
+#
+interface Ethernet0/0/6
+#
+interface Ethernet0/0/7
+#
+interface GigabitEthernet0/0/0
+ ip address 200.0.0.1 255.255.255.0 
+ nat outbound 2000
+#
+interface GigabitEthernet0/0/1
+ ip address 192.168.0.1 255.255.255.0 
+#
+interface NULL0
+#
+ip route-static 10.0.0.0 255.0.0.0 192.168.0.254
+#
+user-interface con 0
+ authentication-mode password
+user-interface vty 0 4
+user-interface vty 16 20
+#
+wlan ac
+#
+return
+
+DYNAMIC NAT CONFIGURATIONS
+
+
+[V200R003C00]
+#
+ sysname NAT
+#
+ snmp-agent local-engineid 800007DB03000000000000
+ snmp-agent 
+#
+ clock timezone China-Standard-Time minus 08:00:00
+#
+portal local-server load portalpage.zip
+#
+ drop illegal-mac alarm
+#
+ set cpu-usage threshold 80 restore 75
+#
+acl number 2010  
+ rule 5 permit source 10.10.0.0 0.0.0.255 
+acl number 2020  
+ rule 5 permit source 10.20.0.0 0.0.0.255 
+#
+aaa 
+ authentication-scheme default
+ authorization-scheme default
+ accounting-scheme default
+ domain default 
+ domain default_admin 
+ local-user admin password cipher %$%$K8m.Nt84DZ}e#<0`8bmE3Uw}%$%$
+ local-user admin service-type http
+#
+firewall zone Local
+ priority 15
+#
+ nat address-group 0 200.0.0.11 200.0.0.20
+ nat address-group 1 200.0.0.21 200.0.0.30
+ #
+ nat static global 200.0.0.2 inside 10.10.0.1 netmask 255.255.255.255
+ nat static global 200.0.0.3 inside 10.30.0.3 netmask 255.255.255.255
+#
+interface Ethernet0/0/0
+#
+interface Ethernet0/0/1
+#
+interface Ethernet0/0/2
+#
+interface Ethernet0/0/3
+#
+interface Ethernet0/0/4
+#
+interface Ethernet0/0/5
+#
+interface Ethernet0/0/6
+#
+interface Ethernet0/0/7
+#
+interface GigabitEthernet0/0/0
+ ip address 200.0.0.1 255.255.255.0 
+ nat outbound 2010 address-group 0 no-pat
+ nat outbound 2020 address-group 1 no-pat
+#
+interface GigabitEthernet0/0/1
+ ip address 192.168.0.1 255.255.255.0 
+#
+interface NULL0
+#
+ip route-static 10.0.0.0 255.0.0.0 192.168.0.254
+#
+user-interface con 0
+ authentication-mode password
+user-interface vty 0 4
+user-interface vty 16 20
+#
+wlan ac
+#
+return
